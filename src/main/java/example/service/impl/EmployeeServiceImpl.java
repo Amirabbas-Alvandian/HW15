@@ -15,6 +15,7 @@ import example.service.TeacherService;
 import example.validation.EntityValidation;
 
 
+import javax.persistence.NoResultException;
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Optional;
@@ -90,17 +91,28 @@ public class EmployeeServiceImpl extends BaseServiceImpl<Employee> implements Em
 
     @Override
     public Optional<Employee> findByCode(Integer code) {
-        return employeeRepository.findByCode(code);
+        try {
+            return employeeRepository.findByCode(code);
+        }catch (NoResultException e){
+            System.out.println(e.getMessage());
+        }
+        return Optional.empty();
     }
 
     @Override
     public Optional<Student> findStudentByCode(Integer code) {
         return studentService.findByCode(code);
+
     }
 
     @Override
     public Optional<Teacher> findTeacherByCode(Integer code) {
-        return teacherService.findByCode(code);
+            return teacherService.findByCode(code);
+    }
+
+    @Override
+    public Optional<Teacher> findTeacherById(Long id) {
+        return teacherService.find(id);
     }
 
     public List<Teacher> AllTeachersList(){

@@ -23,7 +23,7 @@ public class EmployeeRepositoryImpl extends BaseRepositoryImpl<Employee> impleme
 
     public Optional<Employee> findByCode(Integer code){
         return Optional.ofNullable(getEntityManager().
-                createQuery("from Employee where Employee .employeeCode =:code", Employee.class)
+                createQuery("from Employee e where e.employeeCode =:code", Employee.class)
                         .setParameter("code",code)
                 .getSingleResult());
     }

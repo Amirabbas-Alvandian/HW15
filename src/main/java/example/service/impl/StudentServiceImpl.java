@@ -9,11 +9,10 @@ import example.repository.impl.StudentRepositoryImpl;
 import example.service.CourseService;
 import example.service.StudentCourseService;
 import example.service.StudentService;
-import example.util.ApplicationContext;
 import example.validation.EntityValidation;
 import lombok.Getter;
-import lombok.Setter;
 
+import javax.persistence.NoResultException;
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Optional;
@@ -40,11 +39,11 @@ public class StudentServiceImpl extends BaseServiceImpl<Student> implements Stud
     }
 
     @Override
-    public List<StudentCourse> studentSemesterCourses(int term, Long id) {
+    public List<StudentCourse> studentSemesterScores(int term, Long id) {
         return studentCourseService.studentSemesterCourses(term, id);
     }
 
-    public double calculateStudentSemesterAverage(int term, Long id){
+    public Optional<Double> calculateStudentSemesterAverage(int term, Long id){
         return studentRepository.calculateStudentSemesterAverage(term, id);
     }
 
@@ -56,7 +55,27 @@ public class StudentServiceImpl extends BaseServiceImpl<Student> implements Stud
 
     @Override
     public Optional<Student> findByCode(Integer code) {
-        return studentRepository.findByCode(code);
+        try {
+            return studentRepository.findByCode(code);
+        }catch (NoResultException e){
+            System.out.println(e.getMessage());
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<List<Course>> allCoursesPickedByStudent(Long id) {
+        return studentRepository.allCoursesPickedByStudent(id);
+    }
+
+    @Override
+    public Optional<Course> findCourse(Long id) {
+        return courseService.find(id);
+    }
+
+    @Override
+    public Optional<List<Course>> coursesOfStudentFromSpecificSemester(Student student, Integer term) {
+        return studentCourseService.coursesOfStudentFromSpecificSemester(student,term);
     }
 
 

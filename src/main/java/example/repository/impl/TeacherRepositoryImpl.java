@@ -1,12 +1,14 @@
 package example.repository.impl;
 
 import example.base.repository.impl.BaseRepositoryImpl;
+import example.entity.Course;
 import example.entity.Student;
 import example.entity.StudentCourse;
 import example.entity.Teacher;
 import example.repository.TeacherRepository;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 import java.util.Optional;
 
 public class TeacherRepositoryImpl extends BaseRepositoryImpl<Teacher> implements TeacherRepository {
@@ -17,9 +19,25 @@ public class TeacherRepositoryImpl extends BaseRepositoryImpl<Teacher> implement
     @Override
     public Optional<Teacher> findByCode(Integer code) {
         return Optional.of(getEntityManager()
-                .createQuery("from Teacher where Teacher.teacherCode= :code", Teacher.class)
+                .createQuery("from Teacher t where t.teacherCode= :code", Teacher.class)
                 .setParameter("code",code).getSingleResult());
     }
+
+    @Override
+    public Optional<Long> calculateUnits(Teacher teacher,Integer semester) {
+        return Optional.of(getEntityManager().createQuery("select sum(c.unit) from Teacher t" +
+                " join t .courses c  join c.studentCourse sc where t.id = :id " +
+                        "and sc.semester = :semester",Long.class).setParameter("semester",semester)
+                .setParameter("id",teacher.getId()).getSingleResult());
+    }
+
+    @Override
+    public List<Course> courseList(Teacher teacher) {
+        return getEntityManager().createQuery("select c from Teacher t join t.courses c" +
+                " where c.teacher.id = :id",Course.class).setParameter("id",teacher.getId()).getResultList();
+    }
+
+
 /*    @Override
     public int setStudentScore (int term, Long studentId, Long courseId,Double score){
 

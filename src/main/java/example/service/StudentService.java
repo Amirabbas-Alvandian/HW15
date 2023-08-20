@@ -11,10 +11,13 @@ import java.util.Optional;
 
 public interface StudentService extends BaseService<Student> {
     List<Course> seeAllCourses();
-    List<StudentCourse> studentSemesterCourses(int term,Long id);
-    double calculateStudentSemesterAverage(int term, Long id);
-
+    List<StudentCourse> studentSemesterScores(int term,Long id);
+    Optional<Double> calculateStudentSemesterAverage(int term, Long id);
     void unitSelection(Student student,Course course,Integer semester);
-
     Optional<Student> findByCode(Integer code);
+    Optional<List<Course>> allCoursesPickedByStudent(Long id);
+    Optional<Course> findCourse (Long id);
+
+    Optional<List<Course>> coursesOfStudentFromSpecificSemester (Student student, Integer term);
+
 }

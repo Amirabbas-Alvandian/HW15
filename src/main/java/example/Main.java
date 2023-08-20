@@ -2,14 +2,15 @@ package example;
 
 import javax.persistence.EntityManager;
 import example.Connection.EntityManagerClass;
+import example.UI.EmployeeMenu;
+import example.UI.SignIn;
+import example.UI.StudentMenu;
+import example.UI.TeacherMenu;
 import example.entity.*;
 import example.service.*;
 import example.util.ApplicationContext;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 
 public class Main {
@@ -22,16 +23,45 @@ public class Main {
         StudentCourseService studentCourseService = ApplicationContext.getStudentCourseService();
         EmployeeService employeeService = ApplicationContext.getEmployeeService();
 
+        EmployeeMenu employeeMenu = new EmployeeMenu(employeeService,entityManager);
+        StudentMenu studentMenu = new StudentMenu(studentService,entityManager);
+        TeacherMenu teacherMenu = new TeacherMenu(teacherService,entityManager);
+
+/*        Employee admin = new Employee(0);
+        admin.setPassword("admin");
+        employeeService.save(admin);*/
+
+        SignIn signIn = new SignIn(employeeService,studentService,teacherService,employeeMenu,studentMenu,teacherMenu);
+        Scanner scanner = new Scanner(System.in);
+       // Optional<Student> student = new Student("Shoghal","koohi","ghar tarike",100,"Shotor giri");
+        //studentService.save(student);
+/*        Integer code = scanner.nextInt();
+        scanner.nextLine();*/
+
+        Teacher teacher = new Teacher("ashgar","gorbePaz","gonnaNadareKeGOORBE",TeacherRank.PROFESSOR,207);
+        //teacherService.save(teacher);
+        //System.out.println(employeeService.findStudentByCode(306));
+        teacher.setId(12L);
+        //Course course = new Course(Courses.MATH,teacher);
+        //courseService.save(course);
+
+/*        Optional<Course> course = courseService.find(19L);
+        Optional<Student> student = studentService.find(11L);
+        StudentCourse studentCourse = new StudentCourse(student.get(),course.get(),4011);
+        studentCourseService.save(studentCourse);*/
+
+        //System.out.println(teacherService.calculateUnits(teacher, 4011));
+        signIn.typeDetermine(207,"gonnaNadareKeGOORBE");
+
 
         System.out.println("hi");
-        Teacher teacher = Teacher.builder().firstName("asghar").lastName("shalgham").rank(TeacherRank.PROFESSOR)
+/*        Teacher teacher = Teacher.builder().firstName("asghar").lastName("shalgham").rank(TeacherRank.PROFESSOR)
                 .password("daawdawd").teacherCode(201).build();
-        Course course = new Course(Courses.MATH,teacher);
 
         teacher.setCourses(List.of(course));
         Student student = Student.builder().studentNumber(100).firstName("shoghal")
                 .lastName("koohi").major("asbSavari").password("felan").build();
-        Student student1 = new Student("kargadan","kaftar","mar",102,"gh");
+        Student student1 = new Student("kargadan","kaftar","mar",102,"gh");*/
 
         //System.out.println(student1);
  /*       courseService.save(course);
@@ -56,14 +86,13 @@ public class Main {
 /*        student = studentService.find(2L);
         course = courseService.find(3L);*/
 
-
+/*
         teacherService.save(teacher);
         Course course1 = new Course(Courses.GORAZ_SHENASI,teacher);
         courseService.save(course);
         student.setStudentNumber(199);
         studentService.save(student);
-        StudentCourse studentCourse = new StudentCourse(student,course,4011);
-        studentCourseService.save(studentCourse);
+        */
 
 
 

@@ -3,6 +3,7 @@ package example.service.impl;
 import example.base.repository.impl.BaseRepositoryImpl;
 import example.base.service.impl.BaseServiceImpl;
 import example.entity.Course;
+import example.entity.Student;
 import example.repository.CourseRepository;
 import example.repository.impl.CourseRepositoryImpl;
 import example.service.CourseService;
@@ -21,4 +22,8 @@ public class CourseServiceImpl extends BaseServiceImpl<Course> implements Course
     }
 
 
+    @Override
+    public List<Student> studentsOfCourse(Course course) {
+        return courseRepository.studentsOfCourse(course);
+    }
 }

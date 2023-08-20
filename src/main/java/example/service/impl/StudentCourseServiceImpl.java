@@ -1,6 +1,8 @@
 package example.service.impl;
 
 import example.base.service.impl.BaseServiceImpl;
+import example.entity.Course;
+import example.entity.Student;
 import example.entity.StudentCourse;
 import example.repository.StudentCourseRepository;
 import example.repository.impl.StudentCourseRepositoryImpl;
@@ -28,5 +30,10 @@ public class StudentCourseServiceImpl extends BaseServiceImpl<StudentCourse> imp
     @Override
     public List<StudentCourse> studentSemesterCourses(int term, Long id) {
         return studentCourseRepository.studentSemesterCourses(term,id);
+    }
+
+    @Override
+    public Optional<List<Course>> coursesOfStudentFromSpecificSemester(Student student, Integer term) {
+        return studentCourseRepository.coursesOfStudentFromSpecificSemester(student, term);
     }
 }

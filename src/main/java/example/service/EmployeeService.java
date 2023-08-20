@@ -29,6 +29,8 @@ public interface EmployeeService extends BaseService<Employee> {
 
     Optional<Teacher> findTeacherByCode(Integer code);
 
+    Optional<Teacher> findTeacherById(Long id);
+
     List<Student> AllStudentsList();
     List<Teacher> AllTeachersList();
     Optional<Course> findCourse(Long id);

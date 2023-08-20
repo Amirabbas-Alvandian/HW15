@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 public class EmployeeMenu {
     private final EmployeeService employeeService;
-    protected EntityManager entityManager;
+    private final EntityManager entityManager;
 
     public EmployeeMenu(EmployeeService employeeService, EntityManager entityManager) {
         this.employeeService = employeeService;
@@ -476,7 +476,15 @@ public class EmployeeMenu {
         }
         System.out.println("choose teacher");
         while (course.getTeacher() == null){
-            try {
+            Optional<Teacher> teacher = employeeService.findTeacherById(scanLong());
+            if (teacher.isEmpty()){
+                System.out.println("wrong teacher id");
+            }
+            teacher.ifPresent(course::setTeacher);
+
+
+            //ASK
+            /*try {
                 String index = scanner.nextLine();
                 course.setTeacher(teacherList.get(Integer.parseInt(index) - 1));
             } catch (ArrayIndexOutOfBoundsException e) {
@@ -485,7 +493,7 @@ public class EmployeeMenu {
             }catch (NumberFormatException | InputMismatchException n){
                 System.out.println(n.getMessage());
                 System.out.println("enter number only");
-            }
+            }*/
     }
         return course;
     }
