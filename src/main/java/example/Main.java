@@ -51,8 +51,14 @@ public class Main {
         studentCourseService.save(studentCourse);*/
 
         //System.out.println(teacherService.calculateUnits(teacher, 4011));
-        signIn.typeDetermine(207,"gonnaNadareKeGOORBE");
+        //signIn.typeDetermine(207,"gonnaNadareKeGOORBE");
 
+
+        signIn.typeDetermine(0,"admin");
+        //System.out.println(studentCourseService.findAll());
+/*        if (studentService.calculateStudentSemesterAverage(4011,11L).isPresent())
+            System.out.println("test");*/
+        //System.out.println();
 
         System.out.println("hi");
 /*        Teacher teacher = Teacher.builder().firstName("asghar").lastName("shalgham").rank(TeacherRank.PROFESSOR)

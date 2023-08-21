@@ -3,6 +3,7 @@ package example.repository.impl;
 import example.base.repository.impl.BaseRepositoryImpl;
 import example.entity.Course;
 import example.entity.Student;
+import example.entity.StudentCourse;
 import example.repository.StudentRepository;
 
 import javax.persistence.EntityManager;
@@ -33,5 +34,13 @@ public class StudentRepositoryImpl extends BaseRepositoryImpl<Student> implement
                 " where sc.student.id = :id",Course.class).setParameter("id",id).getResultList());
     }
 
+    @Override
+    public Optional<StudentCourse> getScore(Student student, Course course) {
+        return Optional.of(getEntityManager().createQuery("from StudentCourse sc" +
+                                " where sc.student.id = :studentId and sc.course.id = :courseId"
+                        ,StudentCourse.class)
+                .setParameter("studentId",student.getId())
+                .setParameter("courseId",course.getId()).getSingleResult());
+    }
 
 }

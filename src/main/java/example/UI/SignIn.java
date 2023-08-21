@@ -44,7 +44,7 @@ public class SignIn {
         Optional<Employee> result = employeeService.findByCode(code);
         if (result.isPresent()){
             if (result.get().getPassword().equals(password))
-                gotoEmployeeMenu.chooseClass();
+                gotoEmployeeMenu.chooseClass(result.get());
             else
                 System.out.println("wrong password");
             return;

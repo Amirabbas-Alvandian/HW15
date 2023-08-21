@@ -18,7 +18,7 @@ public class CourseRepositoryImpl extends BaseRepositoryImpl<Course> implements 
 
 
     @Override
-    public List<Student> studentsOfCourse(@NotNull Course course, Integer semester) {
+    public List<Student> studentsOfCourse(Course course, Integer semester) {
         return getEntityManager().createQuery("select s from Course c" +
                 " join c.studentCourse sc join sc.student s" +
                         " where c.id = :id and sc.semester = :semester",Student.class)

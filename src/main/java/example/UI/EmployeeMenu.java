@@ -5,12 +5,11 @@ import example.service.EmployeeService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
-public class EmployeeMenu {
+public class EmployeeMenu extends UsefulMethods{
     private final EmployeeService employeeService;
     private final EntityManager entityManager;
 
@@ -20,7 +19,7 @@ public class EmployeeMenu {
     }
 
     Scanner scanner = new Scanner(System.in);
-    String[] classes = {"Teacher","Student","Employee,Course"};
+    String[] classes = {"Teacher","Student","Employee","Course"};
 
     public void printer(String type){
 
@@ -28,7 +27,7 @@ public class EmployeeMenu {
         System.out.println(string);
     }
 
-    public void chooseClass(){
+    public void chooseClass(Employee employee){
         boolean flag = false;
         do {
             System.out.println("""
@@ -46,7 +45,7 @@ public class EmployeeMenu {
 
                 case ("3") -> employee();
 
-                case ("4") -> payslip();
+                case ("4") -> payslip(employee);
 
                 case ("5") -> course();
 
@@ -135,7 +134,7 @@ public class EmployeeMenu {
             System.out.print("student code:");
             student.setStudentNumber(scanInt());
 
-            employeeService.saveStudent(student);
+            student = employeeService.saveStudent(student);
         }
         System.out.println(student + " saved" );
     }
@@ -193,7 +192,7 @@ public class EmployeeMenu {
 
             while (teacher.getRank() == null){
 
-                System.out.print("rank:");
+                System.out.println("rank:");
                 int counter = 1;
                 for (TeacherRank c: TeacherRank.values()) {
                     System.out.println(Integer.toString(counter) + c);
@@ -216,7 +215,7 @@ public class EmployeeMenu {
             System.out.print("teacher code:");
             teacher.setTeacherCode(scanInt());
 
-            employeeService.saveTeacher(teacher);
+            teacher = employeeService.saveTeacher(teacher);
         }
         System.out.println(teacher + " saved" );
     }
@@ -281,7 +280,7 @@ public class EmployeeMenu {
             System.out.print("employee code:");
             employee.setEmployeeCode(scanInt());
 
-            employeeService.save(employee);
+            employee = employeeService.save(employee);
         }
         System.out.println(employee + " saved" );
     }
@@ -338,15 +337,16 @@ public class EmployeeMenu {
         }while (!flag);
     }
 
-    public void payslip(){
-        System.out.println("Employee code");
+    public void payslip(Employee employee){
+/*        System.out.println("Employee code");
         Optional<Employee> employee = employeeService.findByCode(scanInt());
         if (employee.isEmpty()){
             System.out.println("employee not found");
             return;
-        }
-        employee.ifPresent(value -> System.out.println( value + "\n"
-                + "salary = " + value.getBaseSalary() ));
+        }*/
+        System.out.println(employee + "\n"
+                + "salary = " + employee.getBaseSalary());
+
     }
 
     public void courseSave(){
@@ -367,7 +367,7 @@ public class EmployeeMenu {
         }while (!flag);
         course = chooseTeacher(course);
 
-        employeeService.saveCourse(course);
+        course = employeeService.saveCourse(course);
     }
 
     public void courseUpdate(){
@@ -498,30 +498,5 @@ public class EmployeeMenu {
         return course;
     }
 
-    public Integer scanInt (){
-        Integer integer = null ;
-        while (integer == null){
-            try {
-                integer = scanner.nextInt();
-                scanner.nextLine();
-            }catch (InputMismatchException n){
-                System.out.println(n.getMessage());
-            }
-        }
-        return integer;
-    }
-
-    public Long scanLong (){
-        Long tempLong = null;
-        while (tempLong == null){
-            try {
-                tempLong = scanner.nextLong();
-                scanner.nextLine();
-            }catch (InputMismatchException n){
-                System.out.println(n.getMessage());
-            }
-        }
-        return tempLong;
-    }
 
 }

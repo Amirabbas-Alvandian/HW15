@@ -7,16 +7,15 @@ import example.entity.TeacherRank;
 import example.service.TeacherService;
 
 import javax.persistence.EntityManager;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
-public class TeacherMenu {
+public class TeacherMenu extends UsefulMethods{
 
     private final TeacherService teacherService;
     private final EntityManager entityManager;
-    List<Integer> semesters = List.of(3981,3982,3991,3992,4001,4002,4011,4012,4021);
+    List<Integer> semesters = List.of(4012,4021);
 
     Scanner scanner = new Scanner(System.in);
 
@@ -73,12 +72,20 @@ public class TeacherMenu {
         do{
             Integer term = getSemester();
 
-            Course course = getCourse(teacher);
+            Course course = getCourse(teacher,term);
+
+            if (course == null){
+                System.out.println("no courses for this term");
+                return;
+            }
 
             boolean flag = false;
             do {
                 System.out.print("choose student");
                 Student student = getStudentOfCourse(course,term);
+                if (student == null){
+                    return;
+                }
 
                 System.out.print("score:");
                 Double score = scanDouble();
@@ -110,6 +117,11 @@ public class TeacherMenu {
 
     public Student getStudentOfCourse (Course course,Integer semester){
         List<Student> studentList = teacherService.studentsOfCourse(course,semester);
+
+        if (studentList == null){
+            System.out.println("no students for this course this term");
+            return null;
+        }
         for (int i = 0; i < studentList.size(); i++) {
             System.out.println(i+1 + "." + studentList.get(i));
         }
@@ -118,7 +130,7 @@ public class TeacherMenu {
         student.setId( null);
         while (student.getId() == null){
             try {
-                student = studentList.get(scanInt());
+                student = studentList.get(scanInt() - 1);
             }catch (IndexOutOfBoundsException e){
                 System.out.println(e.getMessage());
             }
@@ -145,10 +157,10 @@ public class TeacherMenu {
         return term;
     }
 
-    public Course getCourse(Teacher teacher){
-        List<Course> courses = teacherService.courseList(teacher);
+    public Course getCourse(Teacher teacher, Integer semester){
+        List<Course> courses = teacherService.courseList(teacher,semester);
         if (courses.isEmpty()){
-            System.out.println("no courses in database");
+            System.out.println("no courses in database for this term and teacher");
             return null;
         }
         for (int i = 0; i < courses.size() ; i++) {
@@ -169,30 +181,8 @@ public class TeacherMenu {
 
 
 
-    public Integer scanInt (){
-        Integer integer = null ;
-        while (integer == null){
-            try {
-                integer = scanner.nextInt();
-                scanner.nextLine();
-            }catch (InputMismatchException n){
-                System.out.println(n.getMessage());
-            }
-        }
-        return integer;
-    }
 
 
-    public Double scanDouble (){
-        Double score = null ;
-        while (score == null){
-            try {
-                score = scanner.nextDouble();
-                scanner.nextLine();
-            }catch (InputMismatchException n){
-                System.out.println(n.getMessage());
-            }
-        }
-        return score;
-    }
+
+
 }

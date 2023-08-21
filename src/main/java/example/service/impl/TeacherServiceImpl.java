@@ -80,9 +80,9 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements Teac
     }
 
     @Override
-    public List<Course> courseList(Teacher teacher) {
+    public List<Course> courseList(Teacher teacher,Integer semester) {
         try{
-            return teacherRepository.courseList(teacher);
+            return teacherRepository.courseList(teacher,semester);
         }catch (NoResultException | NullPointerException e){
             System.out.println(e.getMessage());
         }

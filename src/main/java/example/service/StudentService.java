@@ -20,4 +20,9 @@ public interface StudentService extends BaseService<Student> {
 
     Optional<List<Course>> coursesOfStudentFromSpecificSemester (Student student, Integer term);
 
+    Optional<StudentCourse> getScore (Student student, Course course);
+
+    List<StudentCourse> StudentGradeSheet(Student student);
+
+
 }

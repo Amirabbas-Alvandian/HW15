@@ -11,9 +11,9 @@ import java.util.Optional;
 
 public interface EmployeeService extends BaseService<Employee> {
 
-    void saveStudent(Student student);
-    void saveTeacher(Teacher teacher);
-    void saveCourse (Course course);
+    Student saveStudent(Student student);
+    Teacher saveTeacher(Teacher teacher);
+    Course saveCourse (Course course);
 
     void deleteStudent(Long id);
     void deleteTeacher(Long id);

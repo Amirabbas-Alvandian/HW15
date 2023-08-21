@@ -12,5 +12,6 @@ public interface TeacherRepository extends BaseRepository<Teacher> {
 
     Optional<Long> calculateUnits (Teacher teacher,Integer semester);
 
-    List<Course> courseList (Teacher teacher);
+    List<Course> courseList (Teacher teacher,Integer semester);
+
 }

@@ -4,6 +4,7 @@ import example.base.repository.BaseRepository;
 import example.entity.Course;
 import example.entity.Employee;
 import example.entity.Student;
+import example.entity.StudentCourse;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,5 +15,7 @@ public interface StudentRepository extends BaseRepository<Student> {
     Optional<Student> findByCode(Integer code);
 
     Optional<List<Course>> allCoursesPickedByStudent(Long id);
+
+    Optional<StudentCourse> getScore (Student student, Course course);
 
 }

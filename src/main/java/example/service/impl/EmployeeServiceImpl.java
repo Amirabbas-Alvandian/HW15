@@ -41,21 +41,20 @@ public class EmployeeServiceImpl extends BaseServiceImpl<Employee> implements Em
     }
 
     @Override
-    public void saveStudent(Student student) {
-        studentService.save(student);
+    public Student saveStudent(Student student) {
+        return studentService.save(student);
     }
 
     @Override
-    public void saveTeacher(Teacher teacher) {
-        teacherService.save(teacher);
+    public Teacher saveTeacher(Teacher teacher) {
+        return teacherService.save(teacher);
 
     }
 
 
     @Override
-    public void saveCourse(Course course) {
-        courseService.save(course);
-
+    public Course saveCourse(Course course) {
+        return courseService.save(course);
     }
 
     @Override

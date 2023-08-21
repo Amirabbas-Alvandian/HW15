@@ -32,10 +32,17 @@ public class StudentCourseRepositoryImpl extends BaseRepositoryImpl<StudentCours
     }
 
     @Override
-    public Optional<List<Course>> coursesOfStudentFromSpecificSemester(@NotNull Student student, Integer term) {
+    public Optional<List<Course>> coursesOfStudentFromSpecificSemester(Student student, Integer term) {
         return Optional.of(getEntityManager().createQuery("select c from StudentCourse sc " +
                 "join sc.course c where sc.student.id = :id and sc.semester = :term",Course.class)
                 .setParameter("id",student.getId()).setParameter("term", term).getResultList());
+    }
+
+    @Override
+    public List<StudentCourse> StudentGradeSheet(Student student) {
+        return getEntityManager().createQuery("from StudentCourse sc where sc.student.id = :id"
+                        , StudentCourse.class)
+                .setParameter("id", student.getId()).getResultList();
     }
 
     ;

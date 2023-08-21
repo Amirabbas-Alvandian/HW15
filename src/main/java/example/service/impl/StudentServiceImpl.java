@@ -44,7 +44,13 @@ public class StudentServiceImpl extends BaseServiceImpl<Student> implements Stud
     }
 
     public Optional<Double> calculateStudentSemesterAverage(int term, Long id){
-        return studentRepository.calculateStudentSemesterAverage(term, id);
+        try {
+            return studentRepository.calculateStudentSemesterAverage(term, id);
+        }catch (NoResultException | NullPointerException e){
+            System.out.println(e.getMessage());
+        }
+        return Optional.empty();
+
     }
 
     @Override
@@ -91,6 +97,21 @@ public class StudentServiceImpl extends BaseServiceImpl<Student> implements Stud
             System.out.println(e.getMessage());
         }
         return Optional.empty();
+    }
+
+    @Override
+    public Optional<StudentCourse> getScore(Student student, Course course) {
+        try {
+            return studentRepository.getScore(student,course);
+        }catch (NoResultException | NullPointerException e){
+            System.out.println(e.getMessage());
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public List<StudentCourse> StudentGradeSheet(Student student) {
+        return studentCourseService.StudentGradeSheet(student);
     }
 
 

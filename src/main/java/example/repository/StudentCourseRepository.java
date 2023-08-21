@@ -13,4 +13,5 @@ public interface StudentCourseRepository extends BaseRepository<StudentCourse> {
     Optional<StudentCourse> findWithoutId(int term, Long studentId, Long courseId);
 
     Optional<List<Course>> coursesOfStudentFromSpecificSemester (Student student, Integer term);
+    List<StudentCourse> StudentGradeSheet(Student student);
 }

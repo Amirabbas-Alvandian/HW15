@@ -52,4 +52,14 @@ public class StudentCourseServiceImpl extends BaseServiceImpl<StudentCourse> imp
         }
         return Optional.empty();
     }
+
+    @Override
+    public List<StudentCourse> StudentGradeSheet(Student student) {
+        try {
+            return studentCourseRepository.StudentGradeSheet(student);
+        }catch (NoResultException | NullPointerException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
 }

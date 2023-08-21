@@ -15,4 +15,6 @@ public interface StudentCourseService extends BaseService<StudentCourse> {
     List<StudentCourse> studentSemesterCourses(int term, Long id);
 
     Optional<List<Course>> coursesOfStudentFromSpecificSemester (Student student, Integer term);
+
+    List<StudentCourse> StudentGradeSheet(Student student);
 }

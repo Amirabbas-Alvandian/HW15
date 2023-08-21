@@ -2,21 +2,19 @@ package example.UI;
 
 import example.entity.Course;
 import example.entity.Student;
+import example.entity.StudentCourse;
 import example.service.StudentService;
 
 import javax.persistence.EntityManager;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
-public class StudentMenu {
+public class StudentMenu extends UsefulMethods{
     StudentService studentService;
     EntityManager entityManager;
     Scanner scanner = new Scanner(System.in);
 
 
-    List<Integer> semester = List.of(3981,3982,3991,3992,4001,4002,4011,4012,4021);
+    List<Integer> semester = List.of(4012,4021);
 
     public StudentMenu(StudentService studentService ,EntityManager entityManager) {
         this.studentService = studentService;
@@ -44,67 +42,88 @@ public class StudentMenu {
                 case ("3") -> unitSelect(student);
 
                 case ("4") -> {
-                    Optional<List<Course>> courseList = studentService.allCoursesPickedByStudent(student.getId());
+                    List<StudentCourse> courseList = studentService.StudentGradeSheet(student);
                     if (courseList.isEmpty()) {
                         System.out.println("student doesnt have any courses");
-                        return;
-                    }
-                    courseList.ifPresent(value -> value.forEach(System.out::println));
+                    }else
+                        courseList.forEach(System.out::println);
                 }
-                case ("0") -> {
-                    flag = true;
-                }
+                case ("0") -> flag = true;
+
                 default -> System.out.println("wrong input try again");
             }
         }while (!flag);
     }
 
     public void unitSelect(Student student){
-        System.out.println("choose semester");
-        Integer term = null;
+        System.out.println("semester 4021");
+        Integer term = semester.get(1);
 
+/*
         for (int i = 0; i< semester.size();i++){
             System.out.println(i+1 + "." + semester.get(i));
         }
+
         while (term == null){
             try{
-            term = semester.get(scanInt());
+            term = semester.get(scanInt() - 1);
             }catch (IndexOutOfBoundsException e){
                 System.out.println(e.getMessage());
                 System.out.println("index out of bounds");
             }
         }
+        System.out.println(term);*/
+
+        chooseCourse(student,term);
+        System.out.println("finish");
+    }
 
 
-        List<Course> courseList = studentService.seeAllCourses();
-        if (courseList.isEmpty()){
-            System.out.println("there are no courses available");
+    public Integer calculateMaxUnits (Student student,Integer semester){
+
+        Optional<Double> avg = studentService.calculateStudentSemesterAverage(semester,student.getId());
+        if (avg.isPresent()){
+            if(avg.get() >= 18.0){
+                System.out.println("Last semester average: " + avg.get() +  " you can pick upto 24 units");
+                return 24;
+            }
+            System.out.println("average below 18 you can pick upto 20 units");
+            return 20;
+        }else
+            System.out.println("student has no units for previous semester by default you can get upto 20");
+        return 20;
+    }
+
+    private void chooseCourse (Student student,Integer term){
+
+        if(!doesAnyCourseExist()){
+            System.out.println("no courses available in database");
             return;
         }
 
+        List<Course> previousCoursesOfStudent = allStudentCourses(student);
 
-        Optional<List<Course>> studentCourses = studentService.coursesOfStudentFromSpecificSemester(student,term);
-        int totalUnits = 0;
-        if (studentCourses.isPresent()){
-            totalUnits = studentCourses.get().stream().map(Course::getUnit).reduce(0, Integer::sum);
-        }
+        Integer totalUnits = getTotalUnits(student,term);
 
+        Integer previousSemester = semester.get(semester.indexOf(term) - 1);
 
+        System.out.println(previousSemester);
 
-        int counter = 0;
-        for (Course c : courseList) {
-            System.out.println(Integer.toString(++counter) + c);
-        }
-        Integer previousSemester = semester.indexOf(term) - 1;
         Integer max = calculateMaxUnits(student,previousSemester);
+
+
         while (totalUnits <max){
-            System.out.println("choose course");
+            printAllAvailableCourses();
+            System.out.println("choose course ID");
             Optional<Course> course = studentService.findCourse(scanLong());
-            if (course.isPresent() && totalUnits + course.get().getUnit() <= max ){
+            if (course.isPresent() && repeatedCourseAddCheck(previousCoursesOfStudent,course.get(),student)
+                    && maxUnitsCheck(totalUnits,max,course.get()) ){
+
                 totalUnits += course.get().getUnit();
                 studentService.unitSelection(student, course.get(), term);
+
             }else
-                System.out.println("course doesnt exist");
+                System.out.println("course doesnt exist or you cant get the course");
 
             System.out.println("more units?\ny -> more courses\n n -> exit");
             switch (scanner.nextLine()){
@@ -116,53 +135,72 @@ public class StudentMenu {
                 default -> System.out.println("you have chosen DEATH!\npick more units as punishment");
             }
         }
-
-        System.out.println();
-
+        System.out.println("max units picked");
     }
 
 
-    public Integer calculateMaxUnits (Student student,Integer semester){
-
-        Optional<Double> avg = studentService.calculateStudentSemesterAverage(semester,student.getId());
-        if (avg.isPresent()){
-            if(avg.get() >= 18.0){
-
-                return 24;
-            }
-            return 18;
-        }else
-            System.out.println("student has no units for previous semester by default you can get upto 18");
-        return 18;
-    }
-
-
-
-
-
-    public Long scanLong (){
-        Long tempLong = null;
-        while (tempLong == null){
-            try {
-                tempLong = scanner.nextLong();
-                scanner.nextLine();
-            }catch (InputMismatchException n){
-                System.out.println(n.getMessage());
-            }
+    public Integer getTotalUnits(Student student,Integer term){
+        Optional<List<Course>> studentCourses = studentService.coursesOfStudentFromSpecificSemester(student,term);
+        int totalUnits = 0;
+        if (studentCourses.isPresent()){
+            totalUnits = studentCourses.get().stream().map(Course::getUnit).reduce(0, Integer::sum);
         }
-        return tempLong;
+        return totalUnits;
     }
 
-    public Integer scanInt (){
-        Integer integer = null ;
-        while (integer == null){
-            try {
-                integer = scanner.nextInt();
-                scanner.nextLine();
-            }catch (InputMismatchException n){
-                System.out.println(n.getMessage());
-            }
+
+
+    public boolean doesAnyCourseExist(){
+        List<Course> courseList = studentService.seeAllCourses();
+        if (courseList.isEmpty()){
+            System.out.println("there are no courses available");
+            return false;
         }
-        return integer;
+        return true;
     }
+
+    public void printAllAvailableCourses(){
+        for (Course c : studentService.seeAllCourses()) {
+            System.out.println(c);
+        }
+    }
+
+
+    public List<Course> allStudentCourses (Student student){
+        return studentService.allCoursesPickedByStudent(student.getId())
+                .orElse(null);
+    }
+
+    public boolean repeatedCourseAddCheck(List<Course> previousCourses, Course course,Student student){
+
+        for (Course previousCourse : previousCourses) {
+            if (previousCourse.getCourseName().equals(course.getCourseName()))
+                return checkScore(student, course);
+        }
+            return true;
+    }
+
+
+    public boolean maxUnitsCheck (Integer totalUnits, Integer max,Course course){
+        return course.getUnit() + totalUnits <= max;
+    }
+    public Boolean checkScore (Student student,Course course){
+        Optional<StudentCourse> studentCourse = studentService.getScore(student,course);
+        if(studentCourse.isPresent()){
+            if (studentCourse.get().getScore() == null){
+                System.out.println("you have already picked this course");
+                return false;
+            }
+            Double score = studentCourse.get().getScore();
+            if (score < 10){
+                System.out.println("you have failed this course in the past you may pick it again");
+                return true;
+            }
+            System.out.println("you have already passed this course in the past you cant pick it again");
+            return false;
+        }
+        System.out.println("first time picking this course");
+        return true;
+    }
+
 }
