@@ -5,6 +5,7 @@ import example.entity.Course;
 import example.entity.Student;
 import example.entity.StudentCourse;
 import example.repository.StudentCourseRepository;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -31,7 +32,7 @@ public class StudentCourseRepositoryImpl extends BaseRepositoryImpl<StudentCours
     }
 
     @Override
-    public Optional<List<Course>> coursesOfStudentFromSpecificSemester(Student student, Integer term) {
+    public Optional<List<Course>> coursesOfStudentFromSpecificSemester(@NotNull Student student, Integer term) {
         return Optional.of(getEntityManager().createQuery("select c from StudentCourse sc " +
                 "join sc.course c where sc.student.id = :id and sc.semester = :term",Course.class)
                 .setParameter("id",student.getId()).setParameter("term", term).getResultList());

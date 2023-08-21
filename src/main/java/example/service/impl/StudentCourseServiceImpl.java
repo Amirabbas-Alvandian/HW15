@@ -9,6 +9,7 @@ import example.repository.impl.StudentCourseRepositoryImpl;
 import example.service.StudentCourseService;
 import example.validation.EntityValidation;
 
+import javax.persistence.NoResultException;
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Optional;
@@ -24,16 +25,31 @@ public class StudentCourseServiceImpl extends BaseServiceImpl<StudentCourse> imp
 
     @Override
     public Optional<StudentCourse> findWithoutId(int term, Long studentId, Long courseId) {
-        return studentCourseRepository.findWithoutId(term, studentId, courseId);
+        try{
+            return studentCourseRepository.findWithoutId(term, studentId, courseId);
+        }catch (NoResultException | NullPointerException e){
+            System.out.println(e.getMessage());
+        }
+        return Optional.empty();
     }
 
     @Override
     public List<StudentCourse> studentSemesterCourses(int term, Long id) {
-        return studentCourseRepository.studentSemesterCourses(term,id);
+        try {
+            return studentCourseRepository.studentSemesterCourses(term,id);
+        }catch (NoResultException | NullPointerException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
     @Override
     public Optional<List<Course>> coursesOfStudentFromSpecificSemester(Student student, Integer term) {
-        return studentCourseRepository.coursesOfStudentFromSpecificSemester(student, term);
+        try {
+            return studentCourseRepository.coursesOfStudentFromSpecificSemester(student, term);
+        }catch (NoResultException | NullPointerException e){
+            System.out.println(e.getMessage());
+        }
+        return Optional.empty();
     }
 }

@@ -17,6 +17,6 @@ public interface TeacherService extends BaseService<Teacher> {
 
     List<Course> courseList (Teacher teacher);
 
-    List<Student> studentsOfCourse(Course course);
+    List<Student> studentsOfCourse(Course course,Integer semester);
 
 }

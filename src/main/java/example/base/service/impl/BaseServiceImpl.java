@@ -6,10 +6,9 @@ import example.base.repository.impl.BaseRepositoryImpl;
 import example.base.service.BaseService;
 import example.validation.EntityValidation;
 import lombok.Getter;
-import org.hibernate.DuplicateMappingException;
-import org.hibernate.PersistentObjectException;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.RollbackException;
 import javax.validation.ConstraintViolation;
@@ -87,7 +86,12 @@ public class BaseServiceImpl<T> implements BaseService<T> {
 
     @Override
     public Optional<T> find(long id) {
-        return baseRepository.find(id);
+        try {
+             return baseRepository.find(id);
+        }catch (NoResultException | NullPointerException e){
+            System.out.println(e.getMessage());
+        }
+        return Optional.empty();
     }
 
     @Override

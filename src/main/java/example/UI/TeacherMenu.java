@@ -29,6 +29,10 @@ public class TeacherMenu {
     }
 
     public void choices(Teacher teacher){
+
+        boolean flag = false;
+        do{
+
         System.out.println("""
                 1.Your info
                 2.set student Scores
@@ -36,8 +40,6 @@ public class TeacherMenu {
                 0.exit
                 """);
 
-        boolean flag = false;
-        do{
             switch (scanner.nextLine()){
                 case ("1") -> System.out.println(teacher);
                 case ("2") -> setStudentScores(teacher);
@@ -58,7 +60,7 @@ public class TeacherMenu {
         if (teacher.getRank() == TeacherRank.PROFESSOR){
             salary +=  professorBaseSalary;
         }
-        Optional<Long> unitsQuantity = teacherService.calculateUnits(teacher,term);
+        Optional<Long> unitsQuantity = teacherService. calculateUnits(teacher,term);
         if(unitsQuantity.isPresent()){
             System.out.println(teacher);
             salary += unitsQuantity.get()*1_000_000.0;
@@ -72,10 +74,11 @@ public class TeacherMenu {
             Integer term = getSemester();
 
             Course course = getCourse(teacher);
+
             boolean flag = false;
             do {
                 System.out.print("choose student");
-                Student student = getStudentOfCourse(course);
+                Student student = getStudentOfCourse(course,term);
 
                 System.out.print("score:");
                 Double score = scanDouble();
@@ -105,8 +108,8 @@ public class TeacherMenu {
     }
 
 
-    public Student getStudentOfCourse (Course course){
-        List<Student> studentList = teacherService.studentsOfCourse(course);
+    public Student getStudentOfCourse (Course course,Integer semester){
+        List<Student> studentList = teacherService.studentsOfCourse(course,semester);
         for (int i = 0; i < studentList.size(); i++) {
             System.out.println(i+1 + "." + studentList.get(i));
         }
@@ -156,7 +159,7 @@ public class TeacherMenu {
         course.setId(null);
         while (course.getId() == null){
             try {
-                course = courses.get(scanInt());
+                course = courses.get(scanInt() - 1);
             }catch (IndexOutOfBoundsException e){
                 System.out.println(e.getMessage());
             }

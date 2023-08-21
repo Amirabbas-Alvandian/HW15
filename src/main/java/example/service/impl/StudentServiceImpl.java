@@ -57,7 +57,7 @@ public class StudentServiceImpl extends BaseServiceImpl<Student> implements Stud
     public Optional<Student> findByCode(Integer code) {
         try {
             return studentRepository.findByCode(code);
-        }catch (NoResultException e){
+        }catch (NoResultException | NullPointerException e){
             System.out.println(e.getMessage());
         }
         return Optional.empty();
@@ -65,17 +65,32 @@ public class StudentServiceImpl extends BaseServiceImpl<Student> implements Stud
 
     @Override
     public Optional<List<Course>> allCoursesPickedByStudent(Long id) {
-        return studentRepository.allCoursesPickedByStudent(id);
+        try {
+            return studentRepository.allCoursesPickedByStudent(id);
+        }catch (NoResultException | NullPointerException e){
+            System.out.println(e.getMessage());
+        }
+        return Optional.empty();
     }
 
     @Override
     public Optional<Course> findCourse(Long id) {
-        return courseService.find(id);
+        try {
+            return courseService.find(id);
+        }catch (NoResultException | NullPointerException e){
+            System.out.println(e.getMessage());
+        }
+        return Optional.empty();
     }
 
     @Override
     public Optional<List<Course>> coursesOfStudentFromSpecificSemester(Student student, Integer term) {
-        return studentCourseService.coursesOfStudentFromSpecificSemester(student,term);
+        try {
+            return studentCourseService.coursesOfStudentFromSpecificSemester(student,term);
+        }catch (NoResultException | NullPointerException e){
+            System.out.println(e.getMessage());
+        }
+        return Optional.empty();
     }
 
 

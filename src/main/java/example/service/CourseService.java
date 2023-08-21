@@ -7,6 +7,6 @@ import example.entity.Student;
 import java.util.List;
 
 public interface CourseService extends BaseService<Course> {
-    List<Student> studentsOfCourse(Course course);
+    List<Student> studentsOfCourse(Course course,Integer semester);
 
 }

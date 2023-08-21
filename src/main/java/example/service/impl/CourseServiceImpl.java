@@ -9,6 +9,8 @@ import example.repository.impl.CourseRepositoryImpl;
 import example.service.CourseService;
 import example.validation.EntityValidation;
 
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import javax.validation.Validator;
 import java.util.List;
 
@@ -23,7 +25,12 @@ public class CourseServiceImpl extends BaseServiceImpl<Course> implements Course
 
 
     @Override
-    public List<Student> studentsOfCourse(Course course) {
-        return courseRepository.studentsOfCourse(course);
+    public List<Student> studentsOfCourse(Course course,Integer semester) {
+        try {
+             return courseRepository.studentsOfCourse(course ,semester);
+        }catch (NullPointerException | PersistenceException e  ){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 }

@@ -7,5 +7,5 @@ import example.entity.Student;
 import java.util.List;
 
 public interface CourseRepository extends BaseRepository<Course> {
-    List<Student> studentsOfCourse(Course course);
+    List<Student> studentsOfCourse(Course course,Integer semester);
 }

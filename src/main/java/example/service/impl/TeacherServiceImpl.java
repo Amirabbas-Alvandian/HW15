@@ -54,6 +54,8 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements Teac
         }catch (PersistenceException e){
             System.out.println(e.getMessage());
             getEntityManager().getTransaction().rollback();
+        }catch (NullPointerException e){
+            System.out.println(e.getMessage());
         }
     }
 
@@ -61,7 +63,7 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements Teac
     public Optional<Teacher> findByCode(Integer code) {
         try {
             return teacherRepository.findByCode(code);
-        }catch (NoResultException e){
+        }catch (NoResultException | NullPointerException e){
             System.out.println(e.getMessage());
         }
         return Optional.empty();
@@ -69,17 +71,32 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements Teac
 
     @Override
     public Optional<Long> calculateUnits(Teacher teacher,Integer semester) {
-        return teacherRepository.calculateUnits(teacher,semester);
+        try{
+            return teacherRepository.calculateUnits(teacher,semester);
+        }catch (NoResultException | NullPointerException e){
+            System.out.println(e.getMessage());
+        }
+        return Optional.empty();
     }
 
     @Override
     public List<Course> courseList(Teacher teacher) {
-        return teacherRepository.courseList(teacher);
+        try{
+            return teacherRepository.courseList(teacher);
+        }catch (NoResultException | NullPointerException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
     @Override
-    public List<Student> studentsOfCourse(Course course) {
-        return courseService.studentsOfCourse(course);
+    public List<Student> studentsOfCourse(Course course,Integer semester) {
+        try{
+             return courseService.studentsOfCourse(course,semester);
+        }catch (NoResultException | NullPointerException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
 

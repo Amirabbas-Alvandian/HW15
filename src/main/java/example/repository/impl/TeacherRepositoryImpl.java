@@ -6,6 +6,7 @@ import example.entity.Student;
 import example.entity.StudentCourse;
 import example.entity.Teacher;
 import example.repository.TeacherRepository;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -24,7 +25,7 @@ public class TeacherRepositoryImpl extends BaseRepositoryImpl<Teacher> implement
     }
 
     @Override
-    public Optional<Long> calculateUnits(Teacher teacher,Integer semester) {
+    public Optional<Long> calculateUnits(@NotNull Teacher teacher, Integer semester) {
         return Optional.of(getEntityManager().createQuery("select sum(c.unit) from Teacher t" +
                 " join t .courses c  join c.studentCourse sc where t.id = :id " +
                         "and sc.semester = :semester",Long.class).setParameter("semester",semester)
@@ -32,7 +33,7 @@ public class TeacherRepositoryImpl extends BaseRepositoryImpl<Teacher> implement
     }
 
     @Override
-    public List<Course> courseList(Teacher teacher) {
+    public List<Course> courseList(@NotNull Teacher teacher) {
         return getEntityManager().createQuery("select c from Teacher t join t.courses c" +
                 " where c.teacher.id = :id",Course.class).setParameter("id",teacher.getId()).getResultList();
     }
