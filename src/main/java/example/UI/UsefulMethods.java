@@ -7,6 +7,12 @@ public class UsefulMethods {
     private final Scanner scanner = new Scanner(System.in);
 
 
+    public boolean addMoreCheck (){
+        System.out.println("add more -> y");
+        return scanner.nextLine().equals("y");
+    }
+
+
     public Long scanLong (){
         String temp;
         Long tempLong = null;

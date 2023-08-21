@@ -55,6 +55,14 @@ public class Main {
 
 
         signIn.typeDetermine(0,"admin");
+
+/*        entityManager.getTransaction().begin();
+
+        Student student = entityManager.find(Student.class,2L);
+        System.out.println(student);
+        entityManager.getTransaction().commit();*/
+
+        //employeeService.delete(27L);
         //System.out.println(studentCourseService.findAll());
 /*        if (studentService.calculateStudentSemesterAverage(4011,11L).isPresent())
             System.out.println("test");*/

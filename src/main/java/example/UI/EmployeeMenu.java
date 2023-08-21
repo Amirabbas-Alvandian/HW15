@@ -5,6 +5,7 @@ import example.service.EmployeeService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
+import javax.persistence.RollbackException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -56,11 +57,10 @@ public class EmployeeMenu extends UsefulMethods{
     }
 
     public void employee(){
-        printer(classes[2]);
-        String choice = scanner.nextLine();
         boolean flag = false;
         do {
-            switch (choice){
+            printer(classes[2]);
+            switch (scanner.nextLine()){
                 case ("1")-> employeeSave();
                 case ("2")-> employeeUpdate();
                 case ("3")-> employeeDelete();
@@ -71,11 +71,10 @@ public class EmployeeMenu extends UsefulMethods{
 
     }
     private void student() {
-        printer(classes[1]);
-        String choice = scanner.nextLine();
         boolean flag = false;
         do {
-            switch (choice) {
+            printer(classes[1]);
+            switch (scanner.nextLine()) {
                 case ("1") -> studentSave();
                 case ("2") -> studentUpdate();
                 case ("3") -> studentDelete();
@@ -85,11 +84,10 @@ public class EmployeeMenu extends UsefulMethods{
         }while (!flag);
     }
     private void teacher() {
-        printer(classes[0]);
-        String choice = scanner.nextLine();
         boolean flag = false;
         do {
-            switch (choice) {
+            printer(classes[0]);
+            switch (scanner.nextLine()) {
                 case ("1") -> teacherSave();
                 case ("2") -> teacherUpdate();
                 case ("3") -> teacherDelete();
@@ -100,9 +98,9 @@ public class EmployeeMenu extends UsefulMethods{
     }
 
     public void course() {
-        printer(classes[3]);
         boolean flag = false;
         do {
+            printer(classes[3]);
             switch (scanner.nextLine()) {
                 case ("1") -> courseSave();
                 case ("2") -> courseUpdate();
@@ -116,9 +114,9 @@ public class EmployeeMenu extends UsefulMethods{
 
 
     public void studentSave(){
-        Student student = new Student();
-        while (student.getId() == null){
-
+        boolean flag = true;
+        do {
+            Student student = new Student();
             System.out.print("first name:");
             student.setFirstName(scanner.nextLine());
 
@@ -135,54 +133,79 @@ public class EmployeeMenu extends UsefulMethods{
             student.setStudentNumber(scanInt());
 
             student = employeeService.saveStudent(student);
-        }
-        System.out.println(student + " saved" );
+            System.out.println(student);
+
+
+            if (addMoreCheck())
+                System.out.println("next");
+            else
+                flag = false;
+        }while (flag);
+
     }
 
     public void studentUpdate(){
-        System.out.print("student code:");
+        System.out.print("student ID:");
         entityManager.getTransaction().begin();
-        Optional<Student> student = employeeService.findStudentByCode(scanInt());
-        if(student.isPresent()){
-            System.out.println("1.change Password\n2.change major\n3.exit");
-            String choice = scanner.nextLine();
-            try {
-            switch (choice){
-                case ("1")-> {
-                    System.out.println("new password:");
-                    student.get().setPassword(scanner.nextLine());
-                    entityManager.getTransaction().commit();
+        Student student = entityManager.find(Student.class,scanLong());
+        if(student != null){
+            System.out.println("""
+                choose field to change
+                1.first name
+                2.last name
+                3.password
+                4.major
+                0.exit""");
+
+            switch (scanner.nextLine()){
+                case ("1") ->{
+                    System.out.println("new first name");
+                    student.setFirstName(scanner.nextLine());
+                    System.out.println("first name changed successfully");
                 }
-                case ("2")-> {
-                    System.out.println("new Major:");
-                    student.get().setMajor(scanner.nextLine());
-                    entityManager.getTransaction().commit();
+                case ("2") ->{
+                    System.out.println("new last name");
+                    student.setLastName(scanner.nextLine());
+                    System.out.println("last name changed successfully");
                 }
-                case ("0") -> {
-                    return;
+                case ("3") ->{
+                    System.out.println("new password");
+                    student.setPassword(scanner.nextLine());
+                    System.out.println("password changed successfully");
                 }
+                case ("4") -> {
+                    System.out.println("new major");
+                    student.setMajor(scanner.nextLine());
+                    System.out.println("major changed successfully");
+                }
+
+                case ("0") ->System.out.println("abort update");
+
                 default -> System.out.println("wrong input try again");
             }
-
-            }catch (PersistenceException p){
-                System.out.println(p.getMessage());
-            }
         }
-        System.out.println("student not found");
+        try {
+            entityManager.getTransaction().commit();
+        }catch (RollbackException e){
+            System.out.println(e.getMessage());
+        }
+        System.out.println(student);
     }
 
 
     public void studentDelete(){
         System.out.println("student code:");
         Optional<Student> student = employeeService.findStudentByCode(scanInt());
-        student.ifPresent(value -> employeeService.deleteStudent(value.getId()));
         if (student.isEmpty())
             System.out.println("student not found");
+        else
+            employeeService.deleteStudent(student.get().getId());
     }
 
     public void teacherSave(){
-        Teacher teacher = new Teacher();
-        while (teacher.getId() == null){
+        boolean flag = true;
+        do {
+            Teacher teacher = new Teacher();
 
             System.out.print("first name:");
             teacher.setFirstName(scanner.nextLine());
@@ -216,58 +239,77 @@ public class EmployeeMenu extends UsefulMethods{
             teacher.setTeacherCode(scanInt());
 
             teacher = employeeService.saveTeacher(teacher);
-        }
-        System.out.println(teacher + " saved" );
+
+            System.out.println(teacher);
+
+            if (addMoreCheck()){
+                System.out.println("next");
+            }else
+                flag = false;
+        }while (flag);
     }
 
     public void teacherUpdate(){
-        System.out.print("teacher Code");
+        System.out.print("teacher ID");
         entityManager.getTransaction().begin();
-        Optional<Teacher> teacher = employeeService.findTeacherByCode(scanInt());
-        if (teacher.isPresent()){
-            boolean flag = true;
-            do {
-                System.out.println("1.update password\n2.update rank");
-                String choice = scanner.nextLine();
-                switch (choice) {
-                    case ("1") -> {
-                        System.out.println("new password");
-                        teacher.get().setPassword(scanner.nextLine());
-                        entityManager.getTransaction().commit();
-                    }
+        Teacher teacher = entityManager.find(Teacher.class,scanLong());
+        if (teacher != null){
+            System.out.println(teacher);
 
-                    case ("2") -> {
-                        teacherRankUpdate(teacher.get());
-                        entityManager.getTransaction().commit();
-                    }
+            System.out.println("""
+                choose field to change
+                1.first name
+                2.last name
+                3.password
+                4.rank
+                0.exit""");
 
-                    case ("0") ->{
-                        System.out.println("update aborted");
-                        flag = false;
-                    }
-
-                    default -> System.out.println("wrong input try again");
+            switch (scanner.nextLine()){
+                case ("1") ->{
+                    System.out.println("new first name");
+                    teacher.setFirstName(scanner.nextLine());
+                    System.out.println("first name changed successfully");
                 }
-            }while (!flag);
-            System.out.println("teacher not found");
-            entityManager.getTransaction().commit();
+                case ("2") ->{
+                    System.out.println("new last name");
+                    teacher.setLastName(scanner.nextLine());
+                    System.out.println("last name changed successfully");
+                }
+                case ("3") ->{
+                    System.out.println("new password");
+                    teacher.setPassword(scanner.nextLine());
+                    System.out.println("password changed successfully");
+                }
+                case ("4") -> teacherRankUpdate(teacher);
+
+                case ("0") ->System.out.println("abort update");
+
+                default -> System.out.println("wrong input try again");
+            }
+            System.out.println(teacher);
         }
+        try {
+            entityManager.getTransaction().commit();
+        }catch (RollbackException r){
+            System.out.println(r.getMessage());
+        }
+
 
     }
 
     public void teacherDelete(){
         System.out.println("teacher code:");
         Optional<Teacher> teacher = employeeService.findTeacherByCode(scanInt());
-        if (teacher.isEmpty()){
+        if (teacher.isEmpty())
             System.out.println("teacher not found");
-            return;
-        }
-        teacher.ifPresent(value -> employeeService.deleteTeacher(value.getId()));
+        else
+            employeeService.deleteTeacher(teacher.get().getId());
     }
 
     public void employeeSave(){
-        Employee employee = new Employee();
-        while (employee.getId() == null){
+        boolean flag = true;
+        do {
+            Employee employee = new Employee();
             System.out.print("first name:");
             employee.setFirstName(scanner.nextLine());
 
@@ -281,33 +323,64 @@ public class EmployeeMenu extends UsefulMethods{
             employee.setEmployeeCode(scanInt());
 
             employee = employeeService.save(employee);
-        }
-        System.out.println(employee + " saved" );
+            System.out.println(employee + " saved" );
+
+            if (addMoreCheck()){
+                System.out.println("next");
+            }else
+                flag = false;
+        }while (flag);
+
     }
 
     public void employeeUpdate(){
-        System.out.println("Employee code:");
+        System.out.println("Employee ID:");
         entityManager.getTransaction().begin();
-        Optional<Employee> employee = employeeService.findByCode(scanner.nextInt());
-        if(employee.isPresent()){
-            System.out.println("new password");
-            employee.get().setPassword(scanner.nextLine());
-            entityManager.getTransaction().commit();
-            System.out.println("password changed successfully");
-            return;
+        Employee employee = entityManager.find(Employee.class,scanLong());
+        if(employee != null){
+            System.out.println(employee);
+            System.out.println("""
+                    choose field to change
+                    1.first name
+                    2.last name
+                    3.password
+                    0.exit""");
+            switch (scanner.nextLine()){
+                case ("1") ->{
+                    System.out.println("new first name");
+                    employee.setFirstName(scanner.nextLine());
+                    System.out.println("first name changed successfully");
+                }
+                case ("2") ->{
+                    System.out.println("new last name");
+                    employee.setLastName(scanner.nextLine());
+                    System.out.println("last name changed successfully");
+                }
+                case ("3") ->{
+                    System.out.println("new password");
+                    employee.setPassword(scanner.nextLine());
+                    System.out.println("password changed successfully");
+                }
+                case ("0") -> System.out.println("abort update");
+
+                default -> System.out.println("wrong input try again");
+            }
         }
-        entityManager.getTransaction().commit();
-        System.out.println("employee not found");
+        try {
+            entityManager.getTransaction().commit();
+        }catch (RollbackException r){
+            System.out.println(r.getMessage());
+        }
+        System.out.println(employee);
     }
 
     public void employeeDelete(){
         System.out.println("Employee code:");
         Optional<Employee> employee = employeeService.findByCode(scanInt());
-        if (employee.isEmpty()){
+        if (employee.isEmpty())
             System.out.println("employee not found");
-            return;
-        }
-        employee.ifPresent(value -> employeeService.delete(value.getId()));
+        else
+            employeeService.delete(employee.get().getId());
     }
 
 
@@ -350,10 +423,10 @@ public class EmployeeMenu extends UsefulMethods{
     }
 
     public void courseSave(){
-        Course course = new Course();
-        System.out.println("1.predefined courses\n2.create new course\n0.exit");
         boolean flag = false;
         do {
+            Course course = new Course();
+            System.out.println("1.predefined courses\n2.create new course\n0.exit");
             switch (scanner.nextLine()){
                 case ("1") -> course = predefinedCourses(course);
 
@@ -364,10 +437,10 @@ public class EmployeeMenu extends UsefulMethods{
                 default -> System.out.println("wrong input try again");
 
             }
+            course = chooseTeacher(course);
+            course = employeeService.saveCourse(course);
+            System.out.println(course);
         }while (!flag);
-        course = chooseTeacher(course);
-
-        course = employeeService.saveCourse(course);
     }
 
     public void courseUpdate(){
@@ -408,11 +481,10 @@ public class EmployeeMenu extends UsefulMethods{
     public void courseDelete(){
         System.out.print("Course ID:");
         Optional<Course> course = employeeService.findCourse(scanLong());
-        if(course.isEmpty()){
+        if (course.isEmpty())
             System.out.println("course not found");
-            return;
-        }
-        course.ifPresent(value -> employeeService.deleteCourse(value.getId()));
+        else
+            employeeService.deleteCourse(course.get().getId());
     }
 
     public Course predefinedCourses(Course course){

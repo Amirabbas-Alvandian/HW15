@@ -5,6 +5,7 @@ import example.base.repository.BaseRepository;
 import lombok.Getter;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,14 +25,14 @@ public class BaseRepositoryImpl<T> implements BaseRepository<T> {
         return t;
     }
 
-    @Override
+/*    @Override
     public T update(T t) {
         return entityManager.merge(t);
-    }
+    }*/
 
     @Override
     public void delete(long id) {
-        entityManager.remove(find(id));
+        entityManager.remove(find(id).orElseThrow(NoResultException::new));
     }
 
 
@@ -48,5 +49,10 @@ public class BaseRepositoryImpl<T> implements BaseRepository<T> {
     @Override
     public List<T> findAll() {
         return entityManager.createQuery("from " + classname.getName(), classname).getResultList();
+    }
+
+    @Override
+    public T jpaFind(long id) {
+        return entityManager.find(classname,id);
     }
 }

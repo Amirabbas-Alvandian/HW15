@@ -18,6 +18,7 @@ import javax.validation.constraints.Size;
 public class Employee extends Person{
     @Min(value = 0,message = "employeeCode should be between 0-99")
     @Max(value = 99,message = "employeeCode should be between 0-99")
+    @Column(unique = true)
     private Integer employeeCode;
     @Transient
     private final Double baseSalary = 1_000_000.0;

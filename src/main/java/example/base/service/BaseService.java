@@ -23,4 +23,7 @@ public interface BaseService<T> {
 
     boolean validate(T t);
 
+    T jpaFind (long id);
+
+
 }

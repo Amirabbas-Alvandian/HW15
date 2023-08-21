@@ -16,6 +16,7 @@ import example.validation.EntityValidation;
 
 
 import javax.persistence.NoResultException;
+import javax.persistence.RollbackException;
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +26,6 @@ public class EmployeeServiceImpl extends BaseServiceImpl<Employee> implements Em
     private final TeacherService teacherService;
     private final CourseService courseService;
     private final EmployeeRepository employeeRepository;
-    private final Validator validator;
 
     public EmployeeServiceImpl(EmployeeRepositoryImpl employeeRepository,
                                StudentService studentService,
@@ -37,7 +37,7 @@ public class EmployeeServiceImpl extends BaseServiceImpl<Employee> implements Em
         this.teacherService = teacherService;
         this.courseService = courseService;
         this.employeeRepository = employeeRepository;
-        validator = EntityValidation.validator;
+        Validator validator = EntityValidation.validator;
     }
 
     @Override
@@ -59,17 +59,35 @@ public class EmployeeServiceImpl extends BaseServiceImpl<Employee> implements Em
 
     @Override
     public void deleteStudent(Long id) {
-        studentService.delete(id);
+        try {
+            studentService.delete(id);
+        }catch (RollbackException r){
+            System.out.println(r.getMessage());
+            System.out.println("foreign key");
+        }
+
     }
 
     @Override
     public void deleteTeacher(Long id) {
-        teacherService.delete(id);
+        try {
+            teacherService.delete(id);
+        }catch (RollbackException r){
+            System.out.println(r.getMessage());
+            System.out.println("foreign key");
+        }
+
     }
 
     @Override
     public void deleteCourse(Long id) {
-        courseService.delete(id);
+        try {
+            courseService.delete(id);
+        }catch (RollbackException r){
+            System.out.println(r.getMessage());
+            System.out.println("foreign key");
+        }
+
     }
 
     @Override

@@ -50,20 +50,22 @@ public class BaseServiceImpl<T> implements BaseService<T> {
 
     @Override
     public T update(T t) {
-        if(!validate(t)){
+        if (!validate(t)) {
             return null;
         }
         entityManager.getTransaction().begin();
+        T result = null;
         try {
-            T result = baseRepository.update(t);
-            entityManager.getTransaction().commit();
-            return result;
-        } catch (PersistenceException p){
+            //result = baseRepository.find(t.id);
+            result = t;
+        } catch (PersistenceException p) {
             System.out.println(p.getMessage());
             entityManager.getTransaction().rollback();
+        } finally {
+            entityManager.getTransaction().commit();
         }
 
-        return null;
+        return result;
     }
 
     @Override
@@ -71,9 +73,12 @@ public class BaseServiceImpl<T> implements BaseService<T> {
         entityManager.getTransaction().begin();
         try {
             baseRepository.delete(id);
-            entityManager.getTransaction().commit();
         }catch (PersistenceException p){
             System.out.println(p.getMessage());
+
+        }catch (IllegalStateException i){
+            System.out.println("other tables have reference to this entity (foreign key)");
+        } finally {
             entityManager.getTransaction().commit();
         }
 
@@ -114,6 +119,16 @@ public class BaseServiceImpl<T> implements BaseService<T> {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public T jpaFind(long id) {
+        try{
+            return baseRepository.jpaFind(id);
+        }catch (PersistenceException | NullPointerException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
 
