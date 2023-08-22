@@ -114,5 +114,16 @@ public class StudentServiceImpl extends BaseServiceImpl<Student> implements Stud
         return studentCourseService.StudentGradeSheet(student);
     }
 
+    @Override
+    public int deleteStudentCourse(Integer semester, Long studentId, Long courseId) {
+        Optional<StudentCourse> studentCourse = studentCourseService.findWithoutId(semester, studentId, courseId);
+        if (studentCourse.isPresent()){
+            System.out.println("found studentCourse");
+            return studentCourseService.deleteWithoutId(semester, studentId, courseId);
+        }
+        System.out.println("student course not found");
+        return 0;
+    }
+
 
 }

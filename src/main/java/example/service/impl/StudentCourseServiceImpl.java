@@ -10,17 +10,18 @@ import example.service.StudentCourseService;
 import example.validation.EntityValidation;
 
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Optional;
 
 public class StudentCourseServiceImpl extends BaseServiceImpl<StudentCourse> implements StudentCourseService {
     private final StudentCourseRepository studentCourseRepository;
-    private final Validator validator;
+
     public StudentCourseServiceImpl(StudentCourseRepositoryImpl studentCourseRepository) {
         super(studentCourseRepository);
         this.studentCourseRepository = studentCourseRepository;
-        validator = EntityValidation.validator;
+        Validator validator = EntityValidation.validator;
     }
 
     @Override
@@ -61,5 +62,18 @@ public class StudentCourseServiceImpl extends BaseServiceImpl<StudentCourse> imp
             System.out.println(e.getMessage());
         }
         return null;
+    }
+
+    @Override
+    public int deleteWithoutId(Integer semester, Long studentId, Long courseId) {
+        getEntityManager().getTransaction().begin();
+        try{
+            return studentCourseRepository.deleteWithoutId(semester, studentId, courseId);
+        }catch (PersistenceException | NullPointerException e){
+            System.out.println(e.getMessage());
+        }finally {
+            getEntityManager().getTransaction().commit();
+        }
+        return 0;
     }
 }

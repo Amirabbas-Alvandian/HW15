@@ -24,5 +24,5 @@ public interface StudentService extends BaseService<Student> {
 
     List<StudentCourse> StudentGradeSheet(Student student);
 
-
+    int deleteStudentCourse(Integer semester, Long studentId, Long courseId);
 }

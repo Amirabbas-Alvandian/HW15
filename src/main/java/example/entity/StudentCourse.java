@@ -77,6 +77,7 @@ public class StudentCourse  implements Serializable{
     @ToString
     @NoArgsConstructor
     @Embeddable
+    @EqualsAndHashCode
     public static class StudentCourseId implements Serializable {
 
         @Serial
@@ -93,6 +94,9 @@ public class StudentCourse  implements Serializable{
             this.courseId = courseId;
             this.semester = semester;
         }
+
+
+
 
 
     }

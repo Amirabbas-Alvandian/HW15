@@ -54,8 +54,12 @@ public class Main {
         //signIn.typeDetermine(207,"gonnaNadareKeGOORBE");
 
 
-        signIn.typeDetermine(0,"admin");
+        signIn.typeDetermine(100,"gharTarike");
 
+        /*Course testc = new Course();
+        testc.setId(19L);
+        Student tests = new Student();
+        tests.setId(11L);*/
 /*        entityManager.getTransaction().begin();
 
         Student student = entityManager.find(Student.class,2L);

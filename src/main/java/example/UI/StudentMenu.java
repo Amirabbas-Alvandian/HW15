@@ -59,6 +59,17 @@ public class StudentMenu extends UsefulMethods{
         System.out.println("semester 4021");
         Integer term = semester.get(1);
 
+        System.out.println("""
+                1.pick unit
+                2.delete unit
+                0.exit
+                """);
+        switch (scanner.nextLine()){
+            case ("1")-> chooseCourse(student,term);
+            case ("2")-> deleteCourse(student,term);
+            case ("0")-> System.out.println("aborting unit selection");
+            default -> System.out.println("wrong input try again");
+        }
 /*
         for (int i = 0; i< semester.size();i++){
             System.out.println(i+1 + "." + semester.get(i));
@@ -74,8 +85,20 @@ public class StudentMenu extends UsefulMethods{
         }
         System.out.println(term);*/
 
-        chooseCourse(student,term);
         System.out.println("finish");
+    }
+
+    private void deleteCourse(Student student, Integer term) {
+        List<Course> courseList = allStudentCourses(student);
+        if (courseList.isEmpty()){
+            System.out.println("you dont have any courses");
+            return;
+        }
+        for (Course c:courseList) {
+            System.out.println(c);
+        }
+        System.out.print("course Id:");
+        System.out.println(studentService.deleteStudentCourse(term, student.getId(), scanLong()));
     }
 
 

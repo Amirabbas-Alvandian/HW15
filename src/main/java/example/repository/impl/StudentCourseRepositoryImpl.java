@@ -45,5 +45,13 @@ public class StudentCourseRepositoryImpl extends BaseRepositoryImpl<StudentCours
                 .setParameter("id", student.getId()).getResultList();
     }
 
+    @Override
+    public int deleteWithoutId(Integer semester, Long studentId, Long courseId) {
+        return getEntityManager().createQuery("delete from StudentCourse sc where sc.semester = :semester" +
+                " and sc.student.id = :student and sc.course.id = :course")
+                .setParameter("semester",semester).setParameter("student",studentId)
+                .setParameter("course",courseId).executeUpdate();
+    }
+
     ;
 }
