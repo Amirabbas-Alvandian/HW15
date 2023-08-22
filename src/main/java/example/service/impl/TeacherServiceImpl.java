@@ -1,6 +1,6 @@
 package example.service.impl;
 
-import example.base.repository.impl.BaseRepositoryImpl;
+
 import example.base.service.impl.BaseServiceImpl;
 import example.entity.Course;
 import example.entity.Student;
@@ -11,19 +11,16 @@ import example.repository.impl.TeacherRepositoryImpl;
 import example.service.CourseService;
 import example.service.StudentCourseService;
 import example.service.TeacherService;
-import example.util.ApplicationContext;
 import example.validation.EntityValidation;
 
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
-import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Optional;
 
 public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements TeacherService {
     private final TeacherRepository teacherRepository;
-    private final Validator validator;
     private final CourseService courseService;
 
     private final StudentCourseService studentCourseService;
@@ -33,7 +30,7 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements Teac
         super(teacherRepository);
         this.teacherRepository = teacherRepository;
         this.studentCourseService = studentCourseService;
-        validator = EntityValidation.validator;
+        Validator validator = EntityValidation.validator;
         this.courseService = courseService;
     }
 
