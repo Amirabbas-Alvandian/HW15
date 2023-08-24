@@ -25,10 +25,10 @@ public class BaseRepositoryImpl<T> implements BaseRepository<T> {
         return t;
     }
 
-/*    @Override
+    @Override
     public T update(T t) {
         return entityManager.merge(t);
-    }*/
+    }
 
     @Override
     public void delete(long id) {
@@ -51,8 +51,4 @@ public class BaseRepositoryImpl<T> implements BaseRepository<T> {
         return entityManager.createQuery("from " + classname.getName(), classname).getResultList();
     }
 
-    @Override
-    public T jpaFind(long id) {
-        return entityManager.find(classname,id);
-    }
 }

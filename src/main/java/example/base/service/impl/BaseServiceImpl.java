@@ -33,15 +33,15 @@ public class BaseServiceImpl<T> implements BaseService<T> {
         if(!validate(t)){
             return null;
         }
-        entityManager.getTransaction().begin();
         try {
+            entityManager.getTransaction().begin();
             baseRepository.save(t);
-            entityManager.getTransaction().commit();
-
-        } catch (PersistenceException p){
+        } catch (PersistenceException | IllegalStateException  p){
             System.out.println(p.getMessage());
             System.out.println("persistence");
             entityManager.getTransaction().rollback();
+        }finally {
+            entityManager.getTransaction().commit();
         }
         return t;
     }
@@ -51,11 +51,9 @@ public class BaseServiceImpl<T> implements BaseService<T> {
         if (!validate(t)) {
             return null;
         }
-        entityManager.getTransaction().begin();
-        T result = null;
         try {
-            //result = baseRepository.find(t.id);
-            result = t;
+            entityManager.getTransaction().begin();
+            return baseRepository.update(t);
         } catch (PersistenceException p) {
             System.out.println(p.getMessage());
             entityManager.getTransaction().rollback();
@@ -63,7 +61,7 @@ public class BaseServiceImpl<T> implements BaseService<T> {
             entityManager.getTransaction().commit();
         }
 
-        return result;
+        return null;
     }
 
     @Override
@@ -119,15 +117,7 @@ public class BaseServiceImpl<T> implements BaseService<T> {
         return true;
     }
 
-    @Override
-    public T jpaFind(long id) {
-        try{
-            return baseRepository.jpaFind(id);
-        }catch (PersistenceException | NullPointerException e){
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
+
 
 
 }

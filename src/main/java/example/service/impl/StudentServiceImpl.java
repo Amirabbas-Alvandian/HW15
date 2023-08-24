@@ -13,6 +13,7 @@ import example.validation.EntityValidation;
 import lombok.Getter;
 
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Optional;
@@ -56,7 +57,18 @@ public class StudentServiceImpl extends BaseServiceImpl<Student> implements Stud
     @Override
     public void unitSelection(Student student, Course course, Integer semester) {
         StudentCourse studentCourse = new StudentCourse(student,course,semester);
-        studentCourseService.save(studentCourse);
+        try {
+            //System.out.println("update");
+            studentCourseService.update(studentCourse);
+        }catch (PersistenceException | IllegalStateException  p ){
+            System.out.println(p.getMessage());
+/*            if (p.getMessage().equals("No entity found for query")){
+                System.out.println("save");
+                studentCourseService.save(studentCourse);
+            }*/
+
+        }
+
     }
 
     @Override
@@ -123,6 +135,11 @@ public class StudentServiceImpl extends BaseServiceImpl<Student> implements Stud
         }
         System.out.println("student course not found");
         return 0;
+    }
+
+    @Override
+    public Optional<StudentCourse> findStudentCourse(Long studentId, Long courseId, Integer semester) {
+        return studentCourseService.findWithoutId(semester,studentId,courseId);
     }
 
 

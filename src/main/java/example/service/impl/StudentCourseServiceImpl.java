@@ -68,7 +68,9 @@ public class StudentCourseServiceImpl extends BaseServiceImpl<StudentCourse> imp
     public int deleteWithoutId(Integer semester, Long studentId, Long courseId) {
         getEntityManager().getTransaction().begin();
         try{
-            return studentCourseRepository.deleteWithoutId(semester, studentId, courseId);
+            Optional<StudentCourse> studentCourse = studentCourseRepository.findWithoutId(semester, studentId, courseId);
+            if (studentCourse.isPresent())
+                studentCourseRepository.deleteById(studentCourse.get());
         }catch (PersistenceException | NullPointerException e){
             System.out.println(e.getMessage());
         }finally {
@@ -76,4 +78,6 @@ public class StudentCourseServiceImpl extends BaseServiceImpl<StudentCourse> imp
         }
         return 0;
     }
+
+
 }

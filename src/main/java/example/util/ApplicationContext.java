@@ -82,4 +82,8 @@ public class ApplicationContext {
     public static StudentCourseService getStudentCourseService() {
         return studentCourseService;
     }
+
+    public static SignIn getSignIn() {
+        return signIn;
+    }
 }

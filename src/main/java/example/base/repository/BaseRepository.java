@@ -7,7 +7,7 @@ public interface BaseRepository<T> {
 
     T save(T t);
 
-/*    T update(T t);*/
+    T update(T t);
 
     void delete(long id);
 
@@ -17,5 +17,4 @@ public interface BaseRepository<T> {
 
     List<T> findAll();
 
-    T jpaFind (long id);
 }

@@ -53,5 +53,8 @@ public class StudentCourseRepositoryImpl extends BaseRepositoryImpl<StudentCours
                 .setParameter("course",courseId).executeUpdate();
     }
 
-    ;
+    @Override
+    public void deleteById(StudentCourse id){
+        getEntityManager().remove(id);
+    }
 }

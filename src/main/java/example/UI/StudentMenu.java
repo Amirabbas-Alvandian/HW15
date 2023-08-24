@@ -6,6 +6,7 @@ import example.entity.StudentCourse;
 import example.service.StudentService;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import java.util.*;
 
 public class StudentMenu extends UsefulMethods{
@@ -99,6 +100,7 @@ public class StudentMenu extends UsefulMethods{
         }
         System.out.print("course Id:");
         System.out.println(studentService.deleteStudentCourse(term, student.getId(), scanLong()));
+
     }
 
 
@@ -124,7 +126,7 @@ public class StudentMenu extends UsefulMethods{
             return;
         }
 
-        List<Course> previousCoursesOfStudent = allStudentCourses(student);
+
 
         Integer totalUnits = getTotalUnits(student,term);
 
@@ -136,6 +138,11 @@ public class StudentMenu extends UsefulMethods{
 
 
         while (totalUnits <max){
+            System.out.println("all student courses BEGIN");
+            List<Course> previousCoursesOfStudent = allStudentCourses(student);
+            System.out.println(previousCoursesOfStudent);
+            System.out.println("all student courses END");
+            totalUnits = getTotalUnits(student,term);
             printAllAvailableCourses();
             System.out.println("choose course ID");
             Optional<Course> course = studentService.findCourse(scanLong());
@@ -143,7 +150,12 @@ public class StudentMenu extends UsefulMethods{
                     && maxUnitsCheck(totalUnits,max,course.get()) ){
 
                 totalUnits += course.get().getUnit();
-                studentService.unitSelection(student, course.get(), term);
+                try {
+                    studentService.unitSelection(student, course.get(), term);
+                }catch (PersistenceException | IllegalStateException  p ){
+                    System.out.println(p.getMessage());
+                }
+
 
             }else
                 System.out.println("course doesnt exist or you cant get the course");

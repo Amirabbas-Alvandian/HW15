@@ -4,7 +4,6 @@ import example.base.service.BaseService;
 import example.entity.Course;
 import example.entity.Student;
 import example.entity.StudentCourse;
-import example.entity.Teacher;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,4 +24,6 @@ public interface StudentService extends BaseService<Student> {
     List<StudentCourse> StudentGradeSheet(Student student);
 
     int deleteStudentCourse(Integer semester, Long studentId, Long courseId);
+
+    Optional<StudentCourse> findStudentCourse(Long studentId, Long courseId, Integer semester);
 }

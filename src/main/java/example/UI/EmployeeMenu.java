@@ -132,7 +132,13 @@ public class EmployeeMenu extends UsefulMethods{
             System.out.print("student code:");
             student.setStudentNumber(scanInt());
 
-            student = employeeService.saveStudent(student);
+            try {
+                student = employeeService.saveStudent(student);
+            }catch (RollbackException r){
+                System.out.println(r.getMessage());
+                System.out.println("key already exist");
+            }
+
             System.out.println(student);
 
 
@@ -238,7 +244,13 @@ public class EmployeeMenu extends UsefulMethods{
             System.out.print("teacher code:");
             teacher.setTeacherCode(scanInt());
 
-            teacher = employeeService.saveTeacher(teacher);
+            try {
+                teacher = employeeService.saveTeacher(teacher);
+            }catch (RollbackException r){
+                System.out.println(r.getMessage());
+                System.out.println("code already exists");
+            }
+
 
             System.out.println(teacher);
 
@@ -321,8 +333,13 @@ public class EmployeeMenu extends UsefulMethods{
 
             System.out.print("employee code:");
             employee.setEmployeeCode(scanInt());
+            try {
+                employee = employeeService.save(employee);
+            }catch (RollbackException r){
+                System.out.println(r.getMessage());
+                System.out.println("code already exists");
+            }
 
-            employee = employeeService.save(employee);
             System.out.println(employee + " saved" );
 
             if (addMoreCheck()){
@@ -428,9 +445,15 @@ public class EmployeeMenu extends UsefulMethods{
             Course course = new Course();
             System.out.println("1.predefined courses\n2.create new course\n0.exit");
             switch (scanner.nextLine()){
-                case ("1") -> course = predefinedCourses(course);
+                case ("1") -> {
+                    course = predefinedCourses(course);
+                    flag = true;
+                }
 
-                case ("2") -> course = newCourse(course);
+                case ("2") ->{
+                    course = newCourse(course);
+                    flag = true;
+                }
 
                 case ("0") -> flag = true;
 

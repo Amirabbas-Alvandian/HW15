@@ -16,6 +16,7 @@ import example.validation.EntityValidation;
 
 
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import javax.persistence.RollbackException;
 import javax.validation.Validator;
 import java.util.List;
@@ -42,19 +43,36 @@ public class EmployeeServiceImpl extends BaseServiceImpl<Employee> implements Em
 
     @Override
     public Student saveStudent(Student student) {
-        return studentService.save(student);
+        try {
+            return studentService.save(student);
+        }catch (PersistenceException p){
+            System.out.println(p.getMessage());
+        }
+        return null;
     }
 
     @Override
     public Teacher saveTeacher(Teacher teacher) {
-        return teacherService.save(teacher);
+        try {
+            return teacherService.save(teacher);
+        }catch (PersistenceException p){
+            System.out.println(p.getMessage());
+        }
+        return null;
 
     }
 
 
     @Override
     public Course saveCourse(Course course) {
-        return courseService.save(course);
+        try {
+            return courseService.save(course);
+        }catch (PersistenceException | IllegalStateException  p) {
+            System.out.println(p.getMessage());
+            System.out.println("persistence");
+            entityManager.getTransaction().rollback();
+        }
+        return null;
     }
 
     @Override

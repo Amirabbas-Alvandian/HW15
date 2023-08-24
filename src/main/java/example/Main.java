@@ -2,10 +2,7 @@ package example;
 
 import javax.persistence.EntityManager;
 import example.Connection.EntityManagerClass;
-import example.UI.EmployeeMenu;
-import example.UI.SignIn;
-import example.UI.StudentMenu;
-import example.UI.TeacherMenu;
+import example.UI.*;
 import example.entity.*;
 import example.service.*;
 import example.util.ApplicationContext;
@@ -14,6 +11,22 @@ import java.util.*;
 
 
 public class Main {
+
+    public static Integer mainScanInt (){
+        String temp;
+        Integer integer = null ;
+        while (integer == null){
+            try {
+                temp = mainScanner.nextLine();
+                integer = Integer.parseInt(temp);
+            }catch (InputMismatchException | NumberFormatException n){
+                System.out.println(n.getMessage());
+            }
+        }
+        return integer;
+    }
+
+    static Scanner mainScanner = new Scanner(System.in);
     public static void main(String[] args) {
         EntityManagerClass entityManagerClass = new EntityManagerClass();
         EntityManager entityManager = entityManagerClass.returnEm();
@@ -26,22 +39,44 @@ public class Main {
         EmployeeMenu employeeMenu = new EmployeeMenu(employeeService,entityManager);
         StudentMenu studentMenu = new StudentMenu(studentService,entityManager);
         TeacherMenu teacherMenu = new TeacherMenu(teacherService,entityManager);
+        SignIn signIn = ApplicationContext.getSignIn();
 
-/*        Employee admin = new Employee(0);
-        admin.setPassword("admin");
-        employeeService.save(admin);*/
 
-        SignIn signIn = new SignIn(employeeService,studentService,teacherService,employeeMenu,studentMenu,teacherMenu);
-        Scanner scanner = new Scanner(System.in);
+/*        Employee employee = new Employee();
+        employee.setPassword("admin");
+        employee.setFirstName("admin");
+        employee.setLastName("adminZade");
+        employee.setEmployeeCode(0);
+        employeeService.save(employee);*/
+        System.out.println("enter your code then password");
+        signIn.typeDetermine(Main.mainScanInt(),Main.mainScanner.nextLine());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
        // Optional<Student> student = new Student("Shoghal","koohi","ghar tarike",100,"Shotor giri");
         //studentService.save(student);
 /*        Integer code = scanner.nextInt();
         scanner.nextLine();*/
 
-        Teacher teacher = new Teacher("ashgar","gorbePaz","gonnaNadareKeGOORBE",TeacherRank.PROFESSOR,207);
+/*        Employee admin = new Employee(0);
+        admin.setPassword("admin");
+        employeeService.save(admin);*/
+/*        Teacher teacher = new Teacher("ashgar","gorbePaz","gonnaNadareKeGOORBE",TeacherRank.PROFESSOR,207);
         //teacherService.save(teacher);
         //System.out.println(employeeService.findStudentByCode(306));
-        teacher.setId(12L);
+        teacher.setId(12L);*/
         //Course course = new Course(Courses.MATH,teacher);
         //courseService.save(course);
 
@@ -54,7 +89,7 @@ public class Main {
         //signIn.typeDetermine(207,"gonnaNadareKeGOORBE");
 
 
-        signIn.typeDetermine(100,"gharTarike");
+        //signIn.typeDetermine(178,"awddwd");
 
         /*Course testc = new Course();
         testc.setId(19L);
@@ -72,7 +107,7 @@ public class Main {
             System.out.println("test");*/
         //System.out.println();
 
-        System.out.println("hi");
+        //System.out.println("hi");
 /*        Teacher teacher = Teacher.builder().firstName("asghar").lastName("shalgham").rank(TeacherRank.PROFESSOR)
                 .password("daawdawd").teacherCode(201).build();
 
@@ -157,4 +192,5 @@ public class Main {
         //entityManager.createQuery("from Employee")
         entityManager.getTransaction().commit();*/
     }
+
 }

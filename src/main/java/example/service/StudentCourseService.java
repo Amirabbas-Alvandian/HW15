@@ -20,4 +20,5 @@ public interface StudentCourseService extends BaseService<StudentCourse> {
 
     int deleteWithoutId(Integer semester, Long studentId, Long courseId);
 
+    //void deleteById(StudentCourse.StudentCourseId id);
 }
